@@ -23,17 +23,17 @@ public class ActionModel implements Serializable {
 
 	private String stockId;
 
-//	@JsonManagedReference
-//	@OneToMany(mappedBy = "stock")
-//	private List<QuoteModel> quotes = new ArrayList<>();
-//
-//	public List<QuoteModel> getQuotes() {
-//		return quotes;
-//	}
-//
-//	public void setQuotes(List<QuoteModel> quotes) {
-//		this.quotes = quotes;
-//	}
+	@JsonManagedReference
+	@OneToMany(mappedBy = "stock")
+	private List<QuoteModel> quotes;
+
+	public List<QuoteModel> getQuotes() {
+		return quotes;
+	}
+
+	public void setQuotes(List<QuoteModel> quotes) {
+		this.quotes = quotes;
+	}
 
 	@PrePersist // método para salvar o ID no banco de dados
 	private void onPersist() {
@@ -47,20 +47,21 @@ public class ActionModel implements Serializable {
 		this.stockId = stockId;
 	}
 
+	//adiciona uma cota a lista de cotas
+	public void addQuote(QuoteModel q) {
+		if (this.quotes==null) {
+			 this.quotes = new ArrayList<>();
+		}
+		this.quotes.add( q );
+	}
+	
+	
 	public String getId() {
 		return id;
 	}
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getStockName() {
-		return stockId;
-	}
-
-	public void setStockName(String stockName) {
-		this.stockId = stockName;
 	}
 
 	public String getStockId() {

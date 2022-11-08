@@ -1,6 +1,7 @@
 package br.inatel.projects.quotation.management.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import br.inatel.projects.quotation.management.model.QuoteModel;
@@ -13,7 +14,7 @@ public class QuoteDTO implements Serializable {
 
 	private LocalDate date;
 
-	private double valor;
+	private BigDecimal valor;
 
 	private String stockId;
 
@@ -30,7 +31,7 @@ public class QuoteDTO implements Serializable {
 		this.id = quote.getId();
 		this.date = quote.getDate();
 		this.valor = quote.getValor();
-		this.stockId = quote.getStock().getStockName();
+		this.stockId = quote.getStock().getStockId();
 	}
 
 	public String getId() {
@@ -57,11 +58,11 @@ public class QuoteDTO implements Serializable {
 		this.date = date;
 	}
 
-	public double getValor() {
+	public BigDecimal getValor() {
 		return valor;
 	}
 
-	public void setValor(double valor) {
+	public void setValor(BigDecimal valor) {
 		this.valor = valor;
 	}
 

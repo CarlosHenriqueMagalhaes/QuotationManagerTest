@@ -3,7 +3,7 @@ package br.inatel.projects.quotation.management.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.inatel.projects.quotation.management.dto.ActionDTO;
 import br.inatel.projects.quotation.management.dto.QuoteDTO;
+import br.inatel.projects.quotation.management.exception.ExceptionCase;
 import br.inatel.projects.quotation.management.model.ActionModel;
 import br.inatel.projects.quotation.management.model.QuoteModel;
 import br.inatel.projects.quotation.management.service.QuoteService;
@@ -32,52 +34,43 @@ public class QuotationController {
 	}
 
 	/**
-	 * método que busca todas as cotações garavadas no banco
+	 * método que busca todas as cotações gravadas no banco
 	 * 
-	 * @return lista de cotações
+	 * @return lista de cotações em formato DTO -- ok
 	 */
 	@GetMapping
-	public List<QuoteModel> listQuotes() {
-		return quoteService.listAllQuotes();
+	public ResponseEntity<?> listQuotes() {
+		List<QuoteModel> quotes = quoteService.listAllQuotes();
+		return ResponseEntity.ok().body(quotes.stream().map(QuoteDTO::new));
 	}
 
 	/**
 	 * busca todas as ações cadastradas no banco
 	 * 
-	 * @return lista de ações
+	 * @return lista de ações -- verificar pq o jpa não esta incializando a lista de
+	 *         cotas
 	 */
 	@GetMapping("/all/actions")
-	public List<ActionModel> listAllActions() {
+	public ResponseEntity<?> listAllActions() {
 		List<ActionModel> actionlist = quoteService.listAllActions();
-		return actionlist;
+		return ResponseEntity.ok().body(actionlist.stream().map(ActionDTO::new));
 	}
 
 	/**
 	 * método que busca uma cotação por id
 	 * 
-	 * @return uma cotação por id
+	 * @return uma cotação por id - ok
 	 */
 	@GetMapping("/{idQuote}")
 	public ResponseEntity<?> findById(@PathVariable String idQuote) {
-		return ResponseEntity.ok().body(quoteService.findById(idQuote));
+		return ResponseEntity.ok().body(quoteService.findById(idQuote).map(QuoteDTO::new));
 	}
-
-	/**
-	 * método que busca uma lista de cotações por stockId -> conforme sua lista de
-	 * cotações associadas
-	 * 
-	 * @return uma lista de cotações
-	 */
-//	@GetMapping("/stock/{idStock}")
-//	public List<QuoteModel> findByStockId(@PathVariable String idStock) {
-//		return quoteService.findByStockId(idStock);
-//	}
 
 	/**
 	 * método que busca o stock e a sua lista de cotações por stockId -> conforme
 	 * sua lista de cotações associadas
 	 * 
-	 * @return uma lista de cotações
+	 * @return uma lista de cotações -- ok
 	 */
 	@GetMapping("/stock/{idStock}")
 	public ResponseEntity<?> findQuoteByStock(@PathVariable String idStock) {
@@ -88,39 +81,69 @@ public class QuotationController {
 	}
 
 	/**
-	 * método quecadastra uma cotação
+	 * método que cadastra uma cotação
 	 * 
 	 * @return cotação criada
-	 * @throws NotFoundException
+	 * @throws ExceptionCase BadRequest -- ok
 	 */
 	@PostMapping("/insert")
-	public ResponseEntity<?> insertQuotation(@RequestBody QuoteDTO quoteDTO) throws NotFoundException {
-		QuoteModel quote = quoteService.insertQuotation(quoteDTO);
-		QuoteDTO dto = new QuoteDTO(quote);
-		return ResponseEntity.ok().body(dto);
+	public ResponseEntity<?> insertQuotation(@RequestBody QuoteDTO quoteDTO) throws ExceptionCase {
+		try {
+			QuoteModel quote = quoteService.insertQuotation(quoteDTO);
+			QuoteDTO dto = new QuoteDTO(quote);
+			return ResponseEntity.ok().body(dto);
+		} catch (ExceptionCase e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
+
+	}
+
+	/**
+	 * deleta uma cotação por id
+	 * 
+	 * @param quoteId
+	 * @return mensagem de erro ou sucesso - ok
+	 */
+	@DeleteMapping("/delete/{quoteId}")
+	public ResponseEntity<?> deleteQuotation(@PathVariable String quoteId) {
+		return ResponseEntity.ok().body(quoteService.deleteQuotation(quoteId));
 	}
 
 	/**
 	 * método que altera uma cotação
 	 * 
 	 * @params QuoteDTO quoteDTO, String quoteId
-	 * @return QuoteDTO cotação alterada
+	 * @return QuoteDTO cotação alterada  - ok 
 	 */
 	@PutMapping("/update/{quoteId}")
 	public ResponseEntity<?> updateQuotation(@RequestBody QuoteDTO quoteDTO, @PathVariable String quoteId) {
-		QuoteModel quote = quoteService.updateQuotation(quoteDTO, quoteId);
-		QuoteDTO dto = new QuoteDTO(quote);
-		return ResponseEntity.ok().body(dto);
+		try {
+			QuoteModel quote = quoteService.updateQuotation(quoteDTO, quoteId);
+			QuoteDTO dto = new QuoteDTO(quote);
+			return ResponseEntity.ok().body(dto);
+		} catch (ExceptionCase e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
+	}
+	
+	/**
+	 * método que cadastra uma cotação
+	 * 
+	 * @return cotação criada
+	 * @throws ExceptionCase BadRequest -- ok
+	 */
+	@PostMapping("/insertAll")
+	public ResponseEntity<?> insertMoreQuotations(@RequestBody ActionDTO actionDTO) throws ExceptionCase {
+		try {
+			ActionModel action = quoteService.insertMoreQuotation(actionDTO);
+			ActionDTO dto = new ActionDTO(action);
+			return ResponseEntity.ok().body(dto);
+		} catch (ExceptionCase e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
+
 	}
 
-	/**
-	 * método que deleta uma cotação
-	 * @params String quoteId
-	 * @return mensagem de erro ou sucesso
-	 */
-	@DeleteMapping("/delete/{quoteId}")
-	public ResponseEntity<?> deleteQuotation(@PathVariable String quoteId) {
-		return ResponseEntity.ok().body(quoteService.deleteQuotation(quoteId));
-	}
+	
 
 }

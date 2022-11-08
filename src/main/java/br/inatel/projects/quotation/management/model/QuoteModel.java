@@ -1,6 +1,7 @@
 package br.inatel.projects.quotation.management.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
@@ -10,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class QuoteModel implements Serializable {
@@ -19,23 +23,27 @@ public class QuoteModel implements Serializable {
 	@Id
 	private String id;
 
+	@NotNull
 	private LocalDate date;
 
-	private double valor;
+	@NotNull
+	private BigDecimal valor;
 
+	@NotNull
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "stock_id")
 	private ActionModel stock;
 
 	@PrePersist // método para salvar o ID no banco de dados
-	private void onPersist() {
+	private void onSave() {
 		this.id = UUID.randomUUID().toString();
 	}
 
 	public QuoteModel() {
 	}
 
-	public QuoteModel(LocalDate date, double valor, ActionModel stock) {
+	public QuoteModel(LocalDate date, BigDecimal valor, ActionModel stock) {
 		this.date = date;
 		this.valor = valor;
 		this.stock = stock;
@@ -57,11 +65,11 @@ public class QuoteModel implements Serializable {
 		this.date = date;
 	}
 
-	public double getValor() {
+	public BigDecimal getValor() {
 		return valor;
 	}
 
-	public void setValor(double valor) {
+	public void setValor(BigDecimal valor) {
 		this.valor = valor;
 	}
 

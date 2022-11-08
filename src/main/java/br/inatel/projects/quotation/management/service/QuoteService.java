@@ -7,16 +7,17 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
+import br.inatel.projects.quotation.management.dto.ActionDTO;
 import br.inatel.projects.quotation.management.dto.QuoteDTO;
+import br.inatel.projects.quotation.management.exception.ExceptionCase;
 import br.inatel.projects.quotation.management.model.ActionModel;
 import br.inatel.projects.quotation.management.model.QuoteModel;
 import br.inatel.projects.quotation.management.repository.QuoteRepository;
 
-@Transactional
 @Service
+@Transactional
 public class QuoteService {
 
 	@Autowired
@@ -52,7 +53,7 @@ public class QuoteService {
 		return ac;
 	}
 
-	public QuoteModel insertQuotation(QuoteDTO quoteDTO) throws NotFoundException {
+	public QuoteModel insertQuotation(QuoteDTO quoteDTO) throws ExceptionCase {
 
 		QuoteModel qm = new QuoteModel();
 		qm.setDate(quoteDTO.getDate());
@@ -67,14 +68,14 @@ public class QuoteService {
 		if (ac != null) {
 			qm.setStock(ac);
 		} else {
-			throw new NotFoundException();
+			throw new ExceptionCase("Erro ao cadastrar");
 		}
 
 		return quoteRepository.save(qm);
 
 	}
 
-	public QuoteModel updateQuotation(QuoteDTO quoteDTO, String quoteId) {
+	public QuoteModel updateQuotation(QuoteDTO quoteDTO, String quoteId) throws ExceptionCase {
 
 		Optional<QuoteModel> qtOptional = findById(quoteId);
 
@@ -92,7 +93,7 @@ public class QuoteService {
 			if (ac != null) {
 				qt.setStock(ac);
 			} else {
-//				throw new NotFoundException("Ação não encontrada!");
+				throw new ExceptionCase("Ação não encontrada!");
 			}
 
 			qtSalvo = quoteRepository.save(qt);
@@ -112,6 +113,24 @@ public class QuoteService {
 		}
 
 		return "cotação não encontrada";
+	}
+
+	public ActionModel insertMoreQuotation(ActionDTO actionDTO) {
+		ActionModel ac = new ActionModel();
+		ac.setStockId(actionDTO.getStockId());
+		if (actionDTO.getQuotes() != null && !actionDTO.getQuotes().isEmpty()) {
+			
+			//esse faz para qdo só passar o actionId em cima e não em cada cotação
+			for(QuoteDTO quotes : actionDTO.getQuotes()) {
+				quotes.setStockId(actionDTO.getStockId());
+				ac.addQuote(insertQuotation(quotes));
+			}
+			
+			//esse considera que para cada cotação enviada na lista é necessário passar o stockid
+//			actionDTO.getQuotes().stream().forEach(n -> ac.addQuote(insertQuotation(n)));
+		}
+
+		return ac;
 	}
 
 }

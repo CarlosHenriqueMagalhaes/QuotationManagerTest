@@ -28,6 +28,14 @@ public class ActionDTO implements Serializable {
 
 	// inicializando os valores do meu DTO conforme a busca que veio no obj
 	// actionModel
+	public ActionDTO(ActionModel ac) {
+		this.id = ac.getId();
+		this.stockId = ac.getStockId();
+		this.quotes = montaListaQuotes(ac.getQuotes());
+	}
+	
+	// inicializando os valores do meu DTO conforme a busca que veio no obj
+	// actionModel
 	public ActionDTO(ActionModel ac, List<QuoteModel> quotes) {
 		this.id = ac.getId();
 		this.stockId = ac.getStockId();

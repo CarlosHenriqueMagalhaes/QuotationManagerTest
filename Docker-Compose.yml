@@ -1,0 +1,50 @@
+version: "3.8"
+services:
+
+ mysql:
+    image: mysql
+    container_name: mysql
+    ports:
+      - 3306:3306
+      - 33060:33060
+    environment:  
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=bootdb
+    networks:
+      - qm-network
+
+ stock-manager:
+    image: adautomendes/stock-manager
+    container_name: stock-manager
+    ports:
+      - 8080:8080
+    environment:
+      - SERVER_HOST=stock-manager
+      - SERVER_PORT=8080
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+ quotationmanagement:
+    image: quotation-manegement
+    container_name: quotation-manegement
+    ports:
+      - 8081:8081
+    environment:
+      - MYSQL_CONTAINER=mysql
+      - STOCK_MANAGER_CONTAINER=stockmanager
+      - QUOTATION_MANAGER_CONTAINER=quotation-manegement
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - qm-network
+    depends_on:
+      - stockmanager
+      - mysql
+
+networks:     
+  qm-network:
+    driver: bridge        
