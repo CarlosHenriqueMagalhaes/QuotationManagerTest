@@ -12,11 +12,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-public class QuoteModel implements Serializable {
+public class Quote implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -24,28 +25,29 @@ public class QuoteModel implements Serializable {
 	private String id;
 
 	@NotNull
-	private LocalDate date;
+	private LocalDate quoteDate;
 
+	@Positive
 	@NotNull
-	private BigDecimal valor;
+	private BigDecimal quotePrice;//quoteprice
 
 	@NotNull
 	@ManyToOne
 	@JsonBackReference
 	@JoinColumn(name = "stock_id")
-	private ActionModel stock;
+	private Stock stock;
 
 	@PrePersist // método para salvar o ID no banco de dados
 	private void onSave() {
 		this.id = UUID.randomUUID().toString();
 	}
 
-	public QuoteModel() {
+	public Quote() {
 	}
 
-	public QuoteModel(LocalDate date, BigDecimal valor, ActionModel stock) {
-		this.date = date;
-		this.valor = valor;
+	public Quote(LocalDate date, BigDecimal valor, Stock stock) {
+		this.quoteDate = date;
+		this.quotePrice = valor;
 		this.stock = stock;
 	}
 
@@ -58,26 +60,26 @@ public class QuoteModel implements Serializable {
 	}
 
 	public LocalDate getDate() {
-		return date;
+		return quoteDate;
 	}
 
 	public void setDate(LocalDate date) {
-		this.date = date;
+		this.quoteDate = date;
 	}
 
 	public BigDecimal getValor() {
-		return valor;
+		return quotePrice;
 	}
 
 	public void setValor(BigDecimal valor) {
-		this.valor = valor;
+		this.quotePrice = valor;
 	}
 
-	public ActionModel getStock() {
+	public Stock getStock() {
 		return stock;
 	}
 
-	public void setStock(ActionModel stock) {
+	public void setStock(Stock stock) {
 		this.stock = stock;
 	}
 
@@ -94,13 +96,13 @@ public class QuoteModel implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		QuoteModel other = (QuoteModel) obj;
+		Quote other = (Quote) obj;
 		return Objects.equals(id, other.id);
 	}
 
 	@Override
 	public String toString() {
-		return "QuoteModel [id=" + id + ", date=" + date + ", valor=" + valor + "]";
+		return "QuoteModel [id=" + id + ", date=" + quoteDate + ", valor=" + quotePrice + "]";
 	}
 
 }

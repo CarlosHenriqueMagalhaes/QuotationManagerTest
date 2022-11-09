@@ -5,95 +5,156 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import br.inatel.projects.quotation.management.dto.ActionDTO;
 import br.inatel.projects.quotation.management.dto.QuoteDTO;
+import br.inatel.projects.quotation.management.dto.StockDTO;
 import br.inatel.projects.quotation.management.exception.ExceptionCase;
-import br.inatel.projects.quotation.management.model.ActionModel;
-import br.inatel.projects.quotation.management.model.QuoteModel;
+import br.inatel.projects.quotation.management.model.Quote;
+import br.inatel.projects.quotation.management.model.Stock;
 import br.inatel.projects.quotation.management.repository.QuoteRepository;
 
 @Service
 @Transactional
 public class QuoteService {
 
-	@Autowired
-	private ActionService actionService;
+	//@Autowired
+	private StockService stockService;
 
-	@Autowired
+	//@Autowired
 	private QuoteRepository quoteRepository;
 
-	public QuoteService(@Lazy ActionService actionService, QuoteRepository quoteRepository) {
-		this.actionService = actionService;
+	public QuoteService(@Lazy StockService stockService, QuoteRepository quoteRepository) {
+		this.stockService = stockService;
 		this.quoteRepository = quoteRepository;
 	}
 
-	public List<ActionModel> listAllActions() {
-		List<ActionModel> stock = actionService.listAllAction();
-		return stock;
-	}
+	/**
+	 * método que lista todas as cotações gravadas no banco
+	 * 
+	 * @return lista de cotações em formato DTO -- ok
+	 */
 
-	public List<QuoteModel> listAllQuotes() {
+	public List<Quote> listAllQuotes() {
 		return quoteRepository.findAll();
 	}
 
-	public Optional<QuoteModel> findById(String quoteId) {
+	/**
+	 * método que lista todas as ações cadastradas no banco
+	 * 
+	 * @return lista de ações -- verificar pq o jpa não esta incializando a lista de
+	 *         cotas
+	 */
+
+	public List<Stock> listAllStock() {
+		List<Stock> stock = stockService.listAllStock();
+		return stock;
+	}
+
+	/**
+	 * método que busca uma cotação por id
+	 * 
+	 * @return uma cotação por id - ok
+	 */
+
+	public Optional<Quote> findById(String quoteId) {
 		return quoteRepository.findById(quoteId);
 	}
 
-	public List<QuoteModel> findByStockId(String idStock) {
+	/**
+	 * método que busca o stock e a sua lista de cotações por stockId -> conforme
+	 * sua lista de cotações associadas
+	 * 
+	 * @return uma lista de cotações -- ok
+	 */
+
+	public List<Quote> findByStockId(String idStock) {
 		return quoteRepository.findByStockId(idStock);
 	}
 
-	public ActionModel findByActionId(String idStock) {
-		ActionModel ac = actionService.findByActionId(idStock);
+	/**
+	 * 
+	 * 
+	 * @return  -- ok
+	 */
+	public Stock findByStock(String idStock) {
+		Stock ac = stockService.findByStockId(idStock);
 		return ac;
 	}
 
-	public QuoteModel insertQuotation(QuoteDTO quoteDTO) throws ExceptionCase {
+	/**
+	 * método que cadastra uma cotação
+	 * 
+	 * @return cotação criada
+	 * @throws ExceptionCase BadRequest -- ok
+	 */
 
-		QuoteModel qm = new QuoteModel();
+	public Quote insertQuotation(QuoteDTO quoteDTO) throws ExceptionCase {
+
+		Quote qm = new Quote();
 		qm.setDate(quoteDTO.getDate());
 		qm.setValor(quoteDTO.getValor());
 
 		// inserir a cheve estrangeira que faz o vínvulo vom a ação
-
 		// fazer a veridicaçãos e existe a ação para fazer o vínculo e se existir setar
 		// no campo da quotação
-		ActionModel ac = actionService.findByActionId(quoteDTO.getStockId());
+		Stock ac = stockService.findByStockId(quoteDTO.getStockId());
 
 		if (ac != null) {
 			qm.setStock(ac);
 		} else {
-			throw new ExceptionCase("Erro ao cadastrar");
+			throw new ExceptionCase("error when registering");
 		}
 
 		return quoteRepository.save(qm);
-
 	}
 
-	public QuoteModel updateQuotation(QuoteDTO quoteDTO, String quoteId) throws ExceptionCase {
+	/**
+	 * deleta uma cotação por id
+	 * 
+	 * @param quoteId
+	 * @return mensagem de erro ou sucesso - ok
+	 */
 
-		Optional<QuoteModel> qtOptional = findById(quoteId);
+	public String deleteQuotation(String quoteId) {
 
-		QuoteModel qtSalvo = null;
+		Optional<Quote> qtOptional = findById(quoteId);
+
+		if (qtOptional != null && qtOptional.isPresent()) {
+			quoteRepository.deleteById(quoteId);
+			return "successfully deleted";
+		}
+
+		return "quote not found";
+	}
+
+	/**
+	 * método que altera uma cotação
+	 * 
+	 * @params QuoteDTO quoteDTO, String quoteId
+	 * @return QuoteDTO cotação alterada - ok
+	 */
+
+	public Quote updateQuotation(QuoteDTO quoteDTO, String quoteId) throws ExceptionCase {
+
+		Optional<Quote> qtOptional = findById(quoteId);
+
+		Quote qtSalvo = null;
 
 		// aqui eu faço a alteração conforme o que o usuário digitou
 		if (qtOptional != null && qtOptional.isPresent()) {
-			QuoteModel qt = qtOptional.get(); // pego o elemento/objeto que foi retornado
+			Quote qt = qtOptional.get(); // pego o elemento/objeto que foi retornado
 			qt.setDate(quoteDTO.getDate());
 			qt.setValor(quoteDTO.getValor());
 
-			// verifica se existe a ação informads para setar na cotação
-			ActionModel ac = actionService.findByActionId(quoteDTO.getStockId());
+			// verifica se existe a ação informada para setar na cotação
+			Stock ac = stockService.findByStockId(quoteDTO.getStockId());
 
 			if (ac != null) {
 				qt.setStock(ac);
 			} else {
-				throw new ExceptionCase("Ação não encontrada!");
+				throw new ExceptionCase("action not found!");
 			}
 
 			qtSalvo = quoteRepository.save(qt);
@@ -103,30 +164,25 @@ public class QuoteService {
 
 	}
 
-	public String deleteQuotation(String quoteId) {
+	/**
+	 * método que cadastra uma cotação
+	 * 
+	 * @return cotação criada
+	 * @throws ExceptionCase BadRequest -- ok
+	 */
 
-		Optional<QuoteModel> qtOptional = findById(quoteId);
-
-		if (qtOptional != null && qtOptional.isPresent()) {
-			quoteRepository.deleteById(quoteId);
-			return "deletado com sucesso";
-		}
-
-		return "cotação não encontrada";
-	}
-
-	public ActionModel insertMoreQuotation(ActionDTO actionDTO) {
-		ActionModel ac = new ActionModel();
+	public Stock insertMoreQuotation(StockDTO actionDTO) {
+		Stock ac = new Stock();
 		ac.setStockId(actionDTO.getStockId());
 		if (actionDTO.getQuotes() != null && !actionDTO.getQuotes().isEmpty()) {
-			
-			//esse faz para qdo só passar o actionId em cima e não em cada cotação
-			for(QuoteDTO quotes : actionDTO.getQuotes()) {
+
+//			esse faz para quando só passar o actionId em cima e não em cada cotação
+			for (QuoteDTO quotes : actionDTO.getQuotes()) {
 				quotes.setStockId(actionDTO.getStockId());
 				ac.addQuote(insertQuotation(quotes));
 			}
-			
-			//esse considera que para cada cotação enviada na lista é necessário passar o stockid
+
+//			esse considera que para cada cotação enviada na lista é necessário passar o stockid
 //			actionDTO.getQuotes().stream().forEach(n -> ac.addQuote(insertQuotation(n)));
 		}
 

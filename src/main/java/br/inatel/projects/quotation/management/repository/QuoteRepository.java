@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import br.inatel.projects.quotation.management.model.QuoteModel;
+import br.inatel.projects.quotation.management.model.Quote;
 
-public interface QuoteRepository extends JpaRepository<QuoteModel, String> {
+public interface QuoteRepository extends JpaRepository<Quote, String> {
 	
-	List<QuoteModel> findByStockId(String idStock);
+	List<Quote> findByStockId(String idStock);
 
 }

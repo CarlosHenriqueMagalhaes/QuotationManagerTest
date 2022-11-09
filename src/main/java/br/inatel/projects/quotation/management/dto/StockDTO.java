@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.inatel.projects.quotation.management.model.ActionModel;
-import br.inatel.projects.quotation.management.model.QuoteModel;
+import br.inatel.projects.quotation.management.model.Stock;
+import br.inatel.projects.quotation.management.model.Quote;
 
-public class ActionDTO implements Serializable {
+public class StockDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -17,35 +17,34 @@ public class ActionDTO implements Serializable {
 
 	private List<QuoteDTO> quotes;
 
-	public ActionDTO() {
+	public StockDTO() {
 	}
 
-	public ActionDTO(String id, String stockId) {
-		super();
+	public StockDTO(String id, String stockId) {
 		this.id = id;
 		this.stockId = stockId;
 	}
 
 	// inicializando os valores do meu DTO conforme a busca que veio no obj
 	// actionModel
-	public ActionDTO(ActionModel ac) {
+	public StockDTO(Stock ac) {
 		this.id = ac.getId();
 		this.stockId = ac.getStockId();
-		this.quotes = montaListaQuotes(ac.getQuotes());
+		this.quotes = buildListQuotes(ac.getQuotes());
 	}
 	
 	// inicializando os valores do meu DTO conforme a busca que veio no obj
 	// actionModel
-	public ActionDTO(ActionModel ac, List<QuoteModel> quotes) {
+	public StockDTO(Stock ac, List<Quote> quotes) {
 		this.id = ac.getId();
 		this.stockId = ac.getStockId();
-		this.quotes = montaListaQuotes(quotes);
+		this.quotes = buildListQuotes(quotes);
 	}
 
-	private List<QuoteDTO> montaListaQuotes(List<QuoteModel> quotes) {
+	private List<QuoteDTO> buildListQuotes(List<Quote> quotes) {
 		List<QuoteDTO> quotesDTO = new ArrayList<>();
 		// percorrendo a lista de cotações para transformar as quotações em cotação dto
-		for (QuoteModel quote : quotes) {
+		for (Quote quote : quotes) {
 			QuoteDTO qt = new QuoteDTO(quote);
 			quotesDTO.add(qt);
 		}

@@ -10,28 +10,32 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-public class ActionModel implements Serializable {
+public class Stock implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	private String id;
 
+	@NotNull
+	@NotBlank
 	private String stockId;
 
 	@JsonManagedReference
 	@OneToMany(mappedBy = "stock")
-	private List<QuoteModel> quotes;
+	private List<Quote> quotes;
 
-	public List<QuoteModel> getQuotes() {
+	public List<Quote> getQuotes() {
 		return quotes;
 	}
 
-	public void setQuotes(List<QuoteModel> quotes) {
+	public void setQuotes(List<Quote> quotes) {
 		this.quotes = quotes;
 	}
 
@@ -40,15 +44,15 @@ public class ActionModel implements Serializable {
 		this.id = UUID.randomUUID().toString();
 	}
 
-	public ActionModel() {
+	public Stock() {
 	}
 
-	public ActionModel(String stockId, List<QuoteModel> quoteList) {
+	public Stock(String stockId, List<Quote> quoteList) {
 		this.stockId = stockId;
 	}
 
 	//adiciona uma cota a lista de cotas
-	public void addQuote(QuoteModel q) {
+	public void addQuote(Quote q) {
 		if (this.quotes==null) {
 			 this.quotes = new ArrayList<>();
 		}
@@ -72,7 +76,7 @@ public class ActionModel implements Serializable {
 		this.stockId = stockId;
 	}
 
-	public void setQuoteList(List<QuoteModel> quoteList) {
+	public void setQuoteList(List<Quote> quoteList) {
 	}
 
 	@Override
@@ -88,7 +92,7 @@ public class ActionModel implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ActionModel other = (ActionModel) obj;
+		Stock other = (Stock) obj;
 		return Objects.equals(id, other.id);
 	}
 

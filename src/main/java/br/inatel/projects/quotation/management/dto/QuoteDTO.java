@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import br.inatel.projects.quotation.management.model.QuoteModel;
+import br.inatel.projects.quotation.management.model.Quote;
 
 public class QuoteDTO implements Serializable {
 
@@ -12,9 +12,9 @@ public class QuoteDTO implements Serializable {
 
 	private String id;
 
-	private LocalDate date;
+	private LocalDate quoteDate;
 
-	private BigDecimal valor;
+	private BigDecimal quotePrice;
 
 	private String stockId;
 
@@ -27,10 +27,10 @@ public class QuoteDTO implements Serializable {
 		this.stockId = stockId;
 	}
 
-	public QuoteDTO(QuoteModel quote) {
+	public QuoteDTO(Quote quote) {
 		this.id = quote.getId();
-		this.date = quote.getDate();
-		this.valor = quote.getValor();
+		this.quoteDate = quote.getDate();
+		this.quotePrice = quote.getValor();
 		this.stockId = quote.getStock().getStockId();
 	}
 
@@ -51,19 +51,19 @@ public class QuoteDTO implements Serializable {
 	}
 
 	public LocalDate getDate() {
-		return date;
+		return quoteDate;
 	}
 
 	public void setDate(LocalDate date) {
-		this.date = date;
+		this.quoteDate = date;
 	}
 
 	public BigDecimal getValor() {
-		return valor;
+		return quotePrice;
 	}
 
 	public void setValor(BigDecimal valor) {
-		this.valor = valor;
+		this.quotePrice = valor;
 	}
 
 }
