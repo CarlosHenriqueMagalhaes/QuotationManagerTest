@@ -29,7 +29,7 @@ public class Quote implements Serializable {
 
 	@Positive
 	@NotNull
-	private BigDecimal quotePrice;//quoteprice
+	private BigDecimal quotePrice;
 
 	@NotNull
 	@ManyToOne
@@ -45,9 +45,9 @@ public class Quote implements Serializable {
 	public Quote() {
 	}
 
-	public Quote(LocalDate date, BigDecimal valor, Stock stock) {
-		this.quoteDate = date;
-		this.quotePrice = valor;
+	public Quote(LocalDate quoteDate, BigDecimal quotePrice, Stock stock) {
+		this.quoteDate = quoteDate;
+		this.quotePrice = quotePrice;
 		this.stock = stock;
 	}
 
@@ -59,20 +59,20 @@ public class Quote implements Serializable {
 		this.id = id;
 	}
 
-	public LocalDate getDate() {
+	public LocalDate getQuoteDate() {
 		return quoteDate;
 	}
 
-	public void setDate(LocalDate date) {
-		this.quoteDate = date;
+	public void setQuoteDate(LocalDate quoteDate) {
+		this.quoteDate = quoteDate;
 	}
 
-	public BigDecimal getValor() {
+	public BigDecimal getQuotePrice() {
 		return quotePrice;
 	}
 
-	public void setValor(BigDecimal valor) {
-		this.quotePrice = valor;
+	public void setQuotePrice(BigDecimal quotePrice) {
+		this.quotePrice = quotePrice;
 	}
 
 	public Stock getStock() {

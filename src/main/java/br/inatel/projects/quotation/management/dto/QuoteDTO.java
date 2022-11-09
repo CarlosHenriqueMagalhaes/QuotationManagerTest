@@ -29,8 +29,8 @@ public class QuoteDTO implements Serializable {
 
 	public QuoteDTO(Quote quote) {
 		this.id = quote.getId();
-		this.quoteDate = quote.getDate();
-		this.quotePrice = quote.getValor();
+		this.quoteDate = quote.getQuoteDate();
+		this.quotePrice = quote.getQuotePrice();
 		this.stockId = quote.getStock().getStockId();
 	}
 
@@ -50,20 +50,20 @@ public class QuoteDTO implements Serializable {
 		this.stockId = stockId;
 	}
 
-	public LocalDate getDate() {
+	public LocalDate getQuoteDate() {
 		return quoteDate;
 	}
 
-	public void setDate(LocalDate date) {
-		this.quoteDate = date;
+	public void setDate(LocalDate quoteDate) {
+		this.quoteDate = quoteDate;
 	}
 
-	public BigDecimal getValor() {
+	public BigDecimal getQuotePrice() {
 		return quotePrice;
 	}
 
-	public void setValor(BigDecimal valor) {
-		this.quotePrice = valor;
+	public void setQuotePrice(BigDecimal quotePrice) {
+		this.quotePrice = quotePrice;
 	}
 
 }

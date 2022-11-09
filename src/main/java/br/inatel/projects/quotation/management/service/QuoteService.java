@@ -93,8 +93,8 @@ public class QuoteService {
 	public Quote insertQuotation(QuoteDTO quoteDTO) throws ExceptionCase {
 
 		Quote qm = new Quote();
-		qm.setDate(quoteDTO.getDate());
-		qm.setValor(quoteDTO.getValor());
+		qm.setQuoteDate(quoteDTO.getQuoteDate());
+		qm.setQuotePrice(quoteDTO.getQuotePrice());
 
 		// inserir a cheve estrangeira que faz o vínvulo vom a ação
 		// fazer a veridicaçãos e existe a ação para fazer o vínculo e se existir setar
@@ -145,8 +145,8 @@ public class QuoteService {
 		// aqui eu faço a alteração conforme o que o usuário digitou
 		if (qtOptional != null && qtOptional.isPresent()) {
 			Quote qt = qtOptional.get(); // pego o elemento/objeto que foi retornado
-			qt.setDate(quoteDTO.getDate());
-			qt.setValor(quoteDTO.getValor());
+			qt.setQuoteDate(quoteDTO.getQuoteDate());
+			qt.setQuotePrice(quoteDTO.getQuotePrice());
 
 			// verifica se existe a ação informada para setar na cotação
 			Stock ac = stockService.findByStockId(quoteDTO.getStockId());
