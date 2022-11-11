@@ -1,5 +1,11 @@
 package br.inatel.projects.quotation.management.controller;
 
+/**
+ * Controller class, where the endpoints will be made
+ * @author carlos.magalhaes
+ * @since 11/10/2022
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,9 +41,9 @@ public class QuotationController {
 	}
 
 	/**
-	 * método que busca todas as cotações gravadas no banco
+	 * method that mapping
 	 * 
-	 * @return lista de cotações em formato DTO -- ok
+	 * @return quote list DTO -- ok
 	 */
 
 	@GetMapping
@@ -47,10 +53,9 @@ public class QuotationController {
 	}
 
 	/**
-	 * busca todas as ações cadastradas no banco
+	 * method that mapping
 	 * 
-	 * @return lista de ações -- verificar pq o jpa não esta incializando a lista de
-	 *         cotas
+	 * @return all stock lists
 	 */
 	@GetMapping("/all/stocks")
 	public ResponseEntity<?> listAllStock() {
@@ -59,43 +64,41 @@ public class QuotationController {
 	}
 
 	/**
-	 * método que busca uma cotação por id
+	 * method that mapping
 	 * 
-	 * @return uma cotação por id - ok
+	 * @return a quote per id - ok
 	 */
 	@GetMapping("/{idQuote}")
 	public ResponseEntity<?> findById(@PathVariable String idQuote) {
 		return ResponseEntity.ok().body(quoteService.findById(idQuote).map(QuoteDTO::new));
 	}
-	
+
 //	@GetMapping("/action/{stockId}")
 //	public ResponseEntity<?> findByStockId(@PathVariable String stockId) {
 //		return ResponseEntity.ok().body(quoteService.findByStockId(stockId).stream().map(QuoteDTO::new));
 //	}
 
 	/**
-	 * método que busca o stock e a sua lista de cotações por stockId -> conforme
-	 * sua lista de cotações associadas
+	 * method that mapping
 	 * 
-	 * @return uma lista de cotações -- ok
+	 * @return stock list -- ok
 	 */
 	@GetMapping("/stock/{idStock}")
 	public ResponseEntity<?> findQuoteByStock(@PathVariable String idStock) {
 		List<Quote> quotes = quoteService.findByStockId(idStock);
-		List<QuoteDTO> quotesDTO = new ArrayList<>();		
+		List<QuoteDTO> quotesDTO = new ArrayList<>();
 		for (Quote qt : quotes) {
 			QuoteDTO qtDTO = new QuoteDTO(qt);
 			quotesDTO.add(qtDTO);
-		}		
+		}
 		StockDTO dto = new StockDTO(quotesDTO);
 		return ResponseEntity.ok().body(dto);
 	}
 
 	/**
-	 * método que cadastra uma cotação
+	 * method that mapping
 	 * 
-	 * @return cotação criada
-	 * @throws ExceptionCase BadRequest -- ok
+	 * @return quote created
 	 */
 	@PostMapping("/insert")
 	public ResponseEntity<?> insertQuotation(@RequestBody QuoteDTO quoteDTO) throws ExceptionCase {
@@ -110,10 +113,10 @@ public class QuotationController {
 	}
 
 	/**
-	 * deleta uma cotação por id
+	 * method that mapping
 	 * 
 	 * @param quoteId
-	 * @return mensagem de erro ou sucesso - ok
+	 * @return error or success message - ok
 	 */
 	@DeleteMapping("/delete/{quoteId}")
 	public ResponseEntity<?> deleteQuotation(@PathVariable String quoteId) {
@@ -121,10 +124,10 @@ public class QuotationController {
 	}
 
 	/**
-	 * método que altera uma cotação
+	 * method that mapping
 	 * 
 	 * @params QuoteDTO quoteDTO, String quoteId
-	 * @return QuoteDTO cotação alterada - ok
+	 * @return QuoteDTO changed quote - ok
 	 */
 	@PutMapping("/update/{quoteId}")
 	public ResponseEntity<?> updateQuotation(@RequestBody QuoteDTO quoteDTO, @PathVariable String quoteId) {
@@ -138,10 +141,9 @@ public class QuotationController {
 	}
 
 	/**
-	 * método que cadastra uma cotação
+	 * method that mapping
 	 * 
-	 * @return cotação criada
-	 * @throws ExceptionCase BadRequest -- ok
+	 * @return multiple quotes created
 	 */
 	@PostMapping("/insertAll")
 	public ResponseEntity<?> insertMoreQuotations(@RequestBody StockDTO actionDTO) throws ExceptionCase {

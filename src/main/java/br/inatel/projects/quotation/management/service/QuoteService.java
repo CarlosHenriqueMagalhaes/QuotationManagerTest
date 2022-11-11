@@ -1,5 +1,11 @@
 package br.inatel.projects.quotation.management.service;
 
+/**
+ * Service class, where the methods to be called in the Controller class are located
+ * @author carlos.magalhaes
+ * @since 11/10/2022
+ */
+
 import java.util.List;
 import java.util.Optional;
 
@@ -38,9 +44,9 @@ public class QuoteService {
 	}
 
 	/**
-	 * método que lista todas as cotações gravadas no banco
+	 * method that lists all quotes recorded in the bank
 	 * 
-	 * @return lista de cotações em formato DTO -- ok
+	 * @return list of quotes in format DTO -- ok
 	 */
 
 	public List<Quote> listAllQuotes() {
@@ -48,10 +54,9 @@ public class QuoteService {
 	}
 
 	/**
-	 * método que lista todas as ações cadastradas no banco
+	 * method that lists all the shares registered in the bank
 	 * 
-	 * @return lista de ações -- verificar pq o jpa não esta incializando a lista de
-	 *         cotas
+	 * @return stock list -- ok
 	 */
 
 	public List<Stock> listAllStock() {
@@ -61,9 +66,9 @@ public class QuoteService {
 	}
 
 	/**
-	 * método que busca uma stock por id
+	 * method that fetches a stockId by id
 	 * 
-	 * @return uma ação
+	 * @return stockId
 	 */
 
 	public Optional<Stock> findByIdStock(String id) {
@@ -71,19 +76,20 @@ public class QuoteService {
 	}
 
 	/**
-	 * método que busca uma stock por id
 	 * 
-	 * @return uma ação
+	 * method that fetches a stock by id
+	 * 
+	 * @return stockId
 	 */
 	public Optional<Quote> findById(String id) {
 		return quoteRepository.findById(id);
 	}
 
 	/**
-	 * método que busca o stock e a sua lista de cotações por stockId -> conforme
-	 * sua lista de cotações associadas
+	 * method that fetches stock and its quote list by stockId as per its associated
+	 * quote list
 	 * 
-	 * @return uma lista de cotações -- ok
+	 * @return a quote list -- ok
 	 */
 
 	public List<Quote> findByStockId(String idStock) {
@@ -91,9 +97,9 @@ public class QuoteService {
 	}
 
 	/**
-	 * método que cadastra uma cotação
+	 * method that registers a quote
 	 * 
-	 * @return cotação criada
+	 * @return quote created
 	 * @throws ExceptionCase BadRequest -- ok
 	 */
 	public Quote insertQuotation(QuoteDTO quoteDTO) throws ExceptionCase {
@@ -102,18 +108,14 @@ public class QuoteService {
 		qm.setDataQuote(quoteDTO.getDataQuote());
 		qm.setQuotePrice(quoteDTO.getQuotePrice());
 
-		// inserir a cheve estrangeira que faz o vínvulo vom a ação
-		// fazer a veridicaçãos e existe a ação para fazer o vínculo e se existir setar
-		// no campo da quotação
-
 		Optional<Stock> ac = stockRepository.findById(quoteDTO.getStockId());
 
 		if (ac != null && ac.isPresent()) {
 			qm.setStock(ac.get());
 		} else {
-			Stock stockCriado = existsAtStockManager(quoteDTO.getStockId());
-			if (stockCriado != null) {
-				qm.setStock(stockCriado);
+			Stock stockCreated = existsAtStockManager(quoteDTO.getStockId());
+			if (stockCreated != null) {
+				qm.setStock(stockCreated);
 			}
 		}
 
@@ -121,10 +123,11 @@ public class QuoteService {
 	}
 
 	/**
-	 * deleta uma cotação por id
+	 * method that deletes a quote by id
 	 * 
 	 * @param quoteId
-	 * @return mensagem de erro ou sucesso - ok
+	 * @return error or success message - ok
+	 * @throws ExceptionCase BadRequest -- ok
 	 */
 
 	public String deleteQuotation(String quoteId) {
@@ -140,10 +143,11 @@ public class QuoteService {
 	}
 
 	/**
-	 * método que altera uma cotação
+	 * method that changes a quote
 	 * 
 	 * @params QuoteDTO quoteDTO, String quoteId
-	 * @return QuoteDTO cotação alterada - ok
+	 * @return QuoteDTO changed quote - ok
+	 * @throws ExceptionCase BadRequest -- ok
 	 */
 
 	public Quote updateQuotation(QuoteDTO quoteDTO, String quoteId) throws ExceptionCase {
@@ -152,13 +156,11 @@ public class QuoteService {
 
 		Quote qtSalvo = null;
 
-		// aqui eu faço a alteração conforme o que o usuário digitou
 		if (qtOptional != null && qtOptional.isPresent()) {
-			Quote qt = qtOptional.get(); // pego o elemento/objeto que foi retornado
+			Quote qt = qtOptional.get();
 			qt.setDataQuote(quoteDTO.getDataQuote());
 			qt.setQuotePrice(quoteDTO.getQuotePrice());
 
-			// verifica se existe a ação informada para setar na cotação
 			Optional<Stock> ac = stockRepository.findById(quoteDTO.getStockId());
 
 			if (ac != null && ac.isPresent()) {
@@ -178,15 +180,14 @@ public class QuoteService {
 	}
 
 	/**
-	 * método que cadastra várias cotação
+	 * method that registers multiple quotes
 	 * 
-	 * @return cotação criada
+	 * @return quotes created
 	 * @throws ExceptionCase BadRequest -- ok
 	 */
 
 	public Stock insertMoreQuotation(StockDTO stockDTO) {
 
-		// verifica se existe a ação informada para setar na cotação
 		Optional<Stock> st = stockRepository.findById(stockDTO.getStockId());
 		Stock stock = null;
 		if (st != null && st.isPresent()) {
@@ -196,25 +197,24 @@ public class QuoteService {
 		}
 
 		if (stockDTO.getQuotes() != null && !stockDTO.getQuotes().isEmpty()) {
-//			esse faz para quando só passar o actionId em cima e não em cada cotação
+
 			for (QuoteDTO quote : stockDTO.getQuotes()) {
-				if(stock != null) {
-					quote.setStockId(stock.getId());					
+				if (stock != null) {
+					quote.setStockId(stock.getId());
 					stock.addQuote(insertQuotation(quote));
 				}
 			}
-
-//			esse considera que para cada cotação enviada na lista é necessário passar o stockid
-//			actionDTO.getQuotes().stream().forEach(n -> ac.addQuote(insertQuotation(n)));
 		}
 
 		return stock;
 	}
 
 	/**
-	 * salva um stock
+	 * method that saves a stock
 	 * 
 	 * @param stock
+	 * @return new stock
+	 * @throws ExceptionCase BadRequest -- ok
 	 */
 	public Stock save(Stock stock) {
 		return stockRepository.save(stock);
@@ -238,7 +238,7 @@ public class QuoteService {
 			newStock.setDescription(stockManager.getDescription());
 			newStock = save(newStock);
 		} else {
-			throw new ExceptionCase("o estoque informado não existe no gerenciador");
+			throw new ExceptionCase("the reported stock does not exist in the manager");
 		}
 
 		return newStock;

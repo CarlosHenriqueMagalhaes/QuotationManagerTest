@@ -1,5 +1,11 @@
 package br.inatel.projects.quotation.management.model;
 
+/**
+ * Entity class
+ * @author carlos.magalhaes
+ * @since 11/10/2022
+ */
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +50,6 @@ public class Stock implements Serializable {
 		this.description = description;
 	}
 
-	// adiciona uma cota a lista de cotas
 	public void addQuote(Quote q) {
 		if (this.quotes == null) {
 			this.quotes = new ArrayList<>();
@@ -90,7 +95,7 @@ public class Stock implements Serializable {
 
 	@Override
 	public String toString() {
-		return "StockModel [id=" + id + ", stockName=" + description + "]";
+		return "Stock [id=" + id + ", description=" + description + "]";
 	}
 
 }

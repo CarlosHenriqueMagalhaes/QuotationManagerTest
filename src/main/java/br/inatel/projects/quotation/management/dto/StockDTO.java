@@ -1,5 +1,11 @@
 package br.inatel.projects.quotation.management.dto;
 
+/**
+ * DTO (Data transfer object) for Stock Class
+ * @author carlos.magalhaes
+ * @since 11/10/2022
+ */
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,16 +31,12 @@ public class StockDTO implements Serializable {
 		this.stockId = stockId;
 	}
 
-	// inicializando os valores do meu DTO conforme a busca que veio no obj
-	// actionModel
 	public StockDTO(Stock ac) {
 		this.id = ac.getId();
 		this.stockId = ac.getDescription();
 		this.quotes = buildListQuotes(ac.getQuotes());
 	}
-	
-	// inicializando os valores do meu DTO conforme a busca que veio no obj
-	// actionModel
+
 	public StockDTO(Stock ac, List<Quote> quotes) {
 		this.id = ac.getId();
 		this.stockId = ac.getDescription();
@@ -43,13 +45,12 @@ public class StockDTO implements Serializable {
 
 	public StockDTO(List<QuoteDTO> quotes2) {
 		this.id = quotes2.get(0).getId();
-		this.stockId = quotes2.get(0).getStockId();		
+		this.stockId = quotes2.get(0).getStockId();
 		this.quotes = quotes2;
 	}
 
 	private List<QuoteDTO> buildListQuotes(List<Quote> quotes) {
 		List<QuoteDTO> quotesDTO = new ArrayList<>();
-		// percorrendo a lista de cotações para transformar as quotações em cotação dto
 		for (Quote quote : quotes) {
 			QuoteDTO qt = new QuoteDTO(quote);
 			quotesDTO.add(qt);

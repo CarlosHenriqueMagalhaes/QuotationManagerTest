@@ -1,5 +1,11 @@
 package br.inatel.projects.quotation.management.model;
 
+/**
+ * Entity class
+ * @author carlos.magalhaes
+ * @since 11/10/2022
+ */
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -37,7 +43,10 @@ public class Quote implements Serializable {
 	@JoinColumn(name = "stock_id")
 	private Stock stock;
 
-	@PrePersist // método para salvar o ID no banco de dados
+	/**
+	 * method to save ID in database
+	 */
+	@PrePersist
 	private void onSave() {
 		this.id = UUID.randomUUID().toString();
 	}

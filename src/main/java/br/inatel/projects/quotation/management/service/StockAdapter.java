@@ -1,5 +1,11 @@
 package br.inatel.projects.quotation.management.service;
 
+/**
+ * Represents the adaptation with api
+ * @author carlos.magalhaes
+ * @since 11/10/2022
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 

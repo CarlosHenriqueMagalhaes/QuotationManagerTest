@@ -1,5 +1,11 @@
 package br.inatel.projects.quotation.management.repository;
 
+/**
+ * Quote repository interface
+ * @author carlos.magalhaes
+ * @since 11/10/2022
+ */
+
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,13 +13,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import br.inatel.projects.quotation.management.model.Quote;
 
 public interface QuoteRepository extends JpaRepository<Quote, String> {
-	
-//	select * from quote where quote.stock_id = 'vale5'
-	List<Quote> findByStockId(String idStock); //query montada pelo jpa
-	
-//query montada nativamente 
-//	@Query(value = "select * from quote where quote.stock_id = :idStock" , nativeQuery = true)
-//	List<Quote> findByStockId(@Param("idStock") String idStock);
 
-	
+	List<Quote> findByStockId(String idStock);
+
 }

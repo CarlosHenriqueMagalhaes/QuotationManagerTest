@@ -1,5 +1,11 @@
 package br.inatel.projects.quotation.management.dto;
 
+/**
+ * DTO (Data transfer object) for Quote Class
+ * @author carlos.magalhaes
+ * @since 11/10/2022
+ */
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
