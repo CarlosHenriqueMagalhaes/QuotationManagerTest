@@ -1,5 +1,7 @@
 package br.inatel.projects.quotation.management.service;
 
+import java.util.ArrayList;
+
 /**
  * Service class, where the methods to be called in the Controller class are located
  * @author carlos.magalhaes
@@ -12,6 +14,8 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import br.inatel.projects.quotation.management.dto.QuoteDTO;
@@ -25,7 +29,7 @@ import br.inatel.projects.quotation.management.repository.StockRepository;
 
 @Service
 @Transactional
-public class QuoteService {
+public class QuotationService {
 
 	@Autowired
 	private StockRepository stockRepository;
@@ -36,7 +40,7 @@ public class QuoteService {
 	@Autowired
 	private StockAdapter stockAdapter;
 
-	public QuoteService(StockRepository stockRepository, QuoteRepository quoteRepository,
+	public QuotationService(StockRepository stockRepository, QuoteRepository quoteRepository,
 			StockAdapter stockManagerAdapter) {
 		this.stockRepository = stockRepository;
 		this.quoteRepository = quoteRepository;
@@ -49,6 +53,7 @@ public class QuoteService {
 	 * @return list of quotes in format DTO -- ok
 	 */
 
+	@Cacheable(value = "stocksList")
 	public List<Quote> listAllQuotes() {
 		return quoteRepository.findAll();
 	}
@@ -59,6 +64,7 @@ public class QuoteService {
 	 * @return stock list -- ok
 	 */
 
+	@Cacheable(value = "stocksList")
 	public List<Stock> listAllStock() {
 		List<Stock> stocks = stockRepository.findAll();
 		stocks.forEach(s -> s.getQuotes().size());
@@ -71,6 +77,7 @@ public class QuoteService {
 	 * @return stockId
 	 */
 
+	@Cacheable(value = "stocksList")
 	public Optional<Stock> findByIdStock(String id) {
 		return stockRepository.findById(id);
 	}
@@ -81,6 +88,8 @@ public class QuoteService {
 	 * 
 	 * @return stockId
 	 */
+
+	@Cacheable(value = "stocksList")
 	public Optional<Quote> findById(String id) {
 		return quoteRepository.findById(id);
 	}
@@ -92,6 +101,7 @@ public class QuoteService {
 	 * @return a quote list -- ok
 	 */
 
+	@Cacheable(value = "stocksList")
 	public List<Quote> findByStockId(String idStock) {
 		return quoteRepository.findByStockId(idStock);
 	}
@@ -102,6 +112,8 @@ public class QuoteService {
 	 * @return quote created
 	 * @throws ExceptionCase BadRequest -- ok
 	 */
+
+	@CacheEvict(value = "stocksList", allEntries = true)
 	public Quote insertQuotation(QuoteDTO quoteDTO) throws ExceptionCase {
 
 		Quote qm = new Quote();
@@ -130,6 +142,7 @@ public class QuoteService {
 	 * @throws ExceptionCase BadRequest -- ok
 	 */
 
+	@CacheEvict(value = "stocksList", allEntries = true)
 	public String deleteQuotation(String quoteId) {
 
 		Optional<?> qtOptional = findById(quoteId);
@@ -150,6 +163,7 @@ public class QuoteService {
 	 * @throws ExceptionCase BadRequest -- ok
 	 */
 
+	@CacheEvict(value = "stocksList", allEntries = true)
 	public Quote updateQuotation(QuoteDTO quoteDTO, String quoteId) throws ExceptionCase {
 
 		Optional<Quote> qtOptional = findById(quoteId);
@@ -185,7 +199,7 @@ public class QuoteService {
 	 * @return quotes created
 	 * @throws ExceptionCase BadRequest -- ok
 	 */
-
+	@CacheEvict(value = "stocksList", allEntries = true)
 	public Stock insertMoreQuotation(StockDTO stockDTO) {
 
 		Optional<Stock> st = stockRepository.findById(stockDTO.getStockId());
@@ -216,6 +230,7 @@ public class QuoteService {
 	 * @return new stock
 	 * @throws ExceptionCase BadRequest -- ok
 	 */
+	@CacheEvict(value = "stocksList", allEntries = true)
 	public Stock save(Stock stock) {
 		return stockRepository.save(stock);
 	}
@@ -242,6 +257,15 @@ public class QuoteService {
 		}
 
 		return newStock;
+	}
+
+	public List<QuoteDTO> buildListQuotes(List<Quote> quotes) {
+		List<QuoteDTO> quotesDTO = new ArrayList<>();
+		for (Quote quote : quotes) {
+			QuoteDTO qt = new QuoteDTO(quote);
+			quotesDTO.add(qt);
+		}
+		return quotesDTO;
 	}
 
 }

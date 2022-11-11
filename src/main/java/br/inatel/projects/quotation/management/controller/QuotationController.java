@@ -27,16 +27,16 @@ import br.inatel.projects.quotation.management.dto.StockDTO;
 import br.inatel.projects.quotation.management.exception.ExceptionCase;
 import br.inatel.projects.quotation.management.model.Quote;
 import br.inatel.projects.quotation.management.model.Stock;
-import br.inatel.projects.quotation.management.service.QuoteService;
+import br.inatel.projects.quotation.management.service.QuotationService;
 
 @RestController
 @RequestMapping("/quotations")
 public class QuotationController {
 
 	@Autowired
-	private QuoteService quoteService;
+	private QuotationService quoteService;
 
-	public QuotationController(QuoteService quoteService) {
+	public QuotationController(QuotationService quoteService) {
 		this.quoteService = quoteService;
 	}
 

@@ -111,7 +111,7 @@ public class Quote implements Serializable {
 
 	@Override
 	public String toString() {
-		return "QuoteModel [id=" + id + ", date=" + dataQuote + ", valor=" + quotePrice + "]";
+		return "Quote [id=" + id + ", dataQuote=" + dataQuote + ", quotePrice=" + quotePrice + "]";
 	}
 
 }
