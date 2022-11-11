@@ -25,7 +25,7 @@ public class Quote implements Serializable {
 	private String id;
 
 	@NotNull
-	private LocalDate quoteDate;
+	private LocalDate dataQuote;
 
 	@Positive
 	@NotNull
@@ -46,7 +46,7 @@ public class Quote implements Serializable {
 	}
 
 	public Quote(LocalDate quoteDate, BigDecimal quotePrice, Stock stock) {
-		this.quoteDate = quoteDate;
+		this.dataQuote = quoteDate;
 		this.quotePrice = quotePrice;
 		this.stock = stock;
 	}
@@ -59,12 +59,12 @@ public class Quote implements Serializable {
 		this.id = id;
 	}
 
-	public LocalDate getQuoteDate() {
-		return quoteDate;
+	public LocalDate getDataQuote() {
+		return dataQuote;
 	}
 
-	public void setQuoteDate(LocalDate quoteDate) {
-		this.quoteDate = quoteDate;
+	public void setDataQuote(LocalDate dataQuote) {
+		this.dataQuote = dataQuote;
 	}
 
 	public BigDecimal getQuotePrice() {
@@ -102,7 +102,7 @@ public class Quote implements Serializable {
 
 	@Override
 	public String toString() {
-		return "QuoteModel [id=" + id + ", date=" + quoteDate + ", valor=" + quotePrice + "]";
+		return "QuoteModel [id=" + id + ", date=" + dataQuote + ", valor=" + quotePrice + "]";
 	}
 
 }

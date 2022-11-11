@@ -12,7 +12,7 @@ public class QuoteDTO implements Serializable {
 
 	private String id;
 
-	private LocalDate quoteDate;
+	private LocalDate dataQuote;
 
 	private BigDecimal quotePrice;
 
@@ -22,16 +22,15 @@ public class QuoteDTO implements Serializable {
 	}
 
 	public QuoteDTO(String id, String stockId) {
-		super();
 		this.id = id;
 		this.stockId = stockId;
 	}
 
 	public QuoteDTO(Quote quote) {
 		this.id = quote.getId();
-		this.quoteDate = quote.getQuoteDate();
+		this.dataQuote = quote.getDataQuote();
 		this.quotePrice = quote.getQuotePrice();
-		this.stockId = quote.getStock().getStockId();
+		this.stockId = quote.getStock().getId();
 	}
 
 	public String getId() {
@@ -50,12 +49,12 @@ public class QuoteDTO implements Serializable {
 		this.stockId = stockId;
 	}
 
-	public LocalDate getQuoteDate() {
-		return quoteDate;
+	public LocalDate getDataQuote() {
+		return dataQuote;
 	}
 
-	public void setDate(LocalDate quoteDate) {
-		this.quoteDate = quoteDate;
+	public void setDataQuote(LocalDate dataQuote) {
+		this.dataQuote = dataQuote;
 	}
 
 	public BigDecimal getQuotePrice() {

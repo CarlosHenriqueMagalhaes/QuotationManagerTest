@@ -1,5 +1,6 @@
 package br.inatel.projects.quotation.management.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import br.inatel.projects.quotation.management.dto.StockDTO;
 import br.inatel.projects.quotation.management.dto.QuoteDTO;
+import br.inatel.projects.quotation.management.dto.StockDTO;
 import br.inatel.projects.quotation.management.exception.ExceptionCase;
-import br.inatel.projects.quotation.management.model.Stock;
 import br.inatel.projects.quotation.management.model.Quote;
+import br.inatel.projects.quotation.management.model.Stock;
 import br.inatel.projects.quotation.management.service.QuoteService;
 
 @RestController
@@ -51,7 +52,7 @@ public class QuotationController {
 	 * @return lista de ações -- verificar pq o jpa não esta incializando a lista de
 	 *         cotas
 	 */
-	@GetMapping("/all/actions")
+	@GetMapping("/all/stocks")
 	public ResponseEntity<?> listAllStock() {
 		List<Stock> stocklist = quoteService.listAllStock();
 		return ResponseEntity.ok().body(stocklist.stream().map(StockDTO::new));
@@ -66,6 +67,11 @@ public class QuotationController {
 	public ResponseEntity<?> findById(@PathVariable String idQuote) {
 		return ResponseEntity.ok().body(quoteService.findById(idQuote).map(QuoteDTO::new));
 	}
+	
+//	@GetMapping("/action/{stockId}")
+//	public ResponseEntity<?> findByStockId(@PathVariable String stockId) {
+//		return ResponseEntity.ok().body(quoteService.findByStockId(stockId).stream().map(QuoteDTO::new));
+//	}
 
 	/**
 	 * método que busca o stock e a sua lista de cotações por stockId -> conforme
@@ -75,9 +81,13 @@ public class QuotationController {
 	 */
 	@GetMapping("/stock/{idStock}")
 	public ResponseEntity<?> findQuoteByStock(@PathVariable String idStock) {
-		Stock ac = quoteService.findByStock(idStock);
-		List<Quote> quotes = quoteService.findByStockId(ac.getId());
-		StockDTO dto = new StockDTO(ac, quotes);
+		List<Quote> quotes = quoteService.findByStockId(idStock);
+		List<QuoteDTO> quotesDTO = new ArrayList<>();		
+		for (Quote qt : quotes) {
+			QuoteDTO qtDTO = new QuoteDTO(qt);
+			quotesDTO.add(qtDTO);
+		}		
+		StockDTO dto = new StockDTO(quotesDTO);
 		return ResponseEntity.ok().body(dto);
 	}
 

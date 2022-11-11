@@ -15,7 +15,7 @@ public class StockDTO implements Serializable {
 
 	private String stockId;
 
-	private List<QuoteDTO> quotes;
+	private List<QuoteDTO> quotes = new ArrayList<>();
 
 	public StockDTO() {
 	}
@@ -29,7 +29,7 @@ public class StockDTO implements Serializable {
 	// actionModel
 	public StockDTO(Stock ac) {
 		this.id = ac.getId();
-		this.stockId = ac.getStockId();
+		this.stockId = ac.getDescription();
 		this.quotes = buildListQuotes(ac.getQuotes());
 	}
 	
@@ -37,8 +37,14 @@ public class StockDTO implements Serializable {
 	// actionModel
 	public StockDTO(Stock ac, List<Quote> quotes) {
 		this.id = ac.getId();
-		this.stockId = ac.getStockId();
+		this.stockId = ac.getDescription();
 		this.quotes = buildListQuotes(quotes);
+	}
+
+	public StockDTO(List<QuoteDTO> quotes2) {
+		this.id = quotes2.get(0).getId();
+		this.stockId = quotes2.get(0).getStockId();		
+		this.quotes = quotes2;
 	}
 
 	private List<QuoteDTO> buildListQuotes(List<Quote> quotes) {

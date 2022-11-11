@@ -4,12 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -25,7 +23,7 @@ public class Stock implements Serializable {
 
 	@NotNull
 	@NotBlank
-	private String stockId;
+	private String description;
 
 	@JsonManagedReference
 	@OneToMany(mappedBy = "stock")
@@ -39,27 +37,21 @@ public class Stock implements Serializable {
 		this.quotes = quotes;
 	}
 
-	@PrePersist // método para salvar o ID no banco de dados
-	private void onPersist() {
-		this.id = UUID.randomUUID().toString();
-	}
-
 	public Stock() {
 	}
 
-	public Stock(String stockId, List<Quote> quoteList) {
-		this.stockId = stockId;
+	public Stock(String description, List<Quote> quoteList) {
+		this.description = description;
 	}
 
-	//adiciona uma cota a lista de cotas
+	// adiciona uma cota a lista de cotas
 	public void addQuote(Quote q) {
-		if (this.quotes==null) {
-			 this.quotes = new ArrayList<>();
+		if (this.quotes == null) {
+			this.quotes = new ArrayList<>();
 		}
-		this.quotes.add( q );
+		this.quotes.add(q);
 	}
-	
-	
+
 	public String getId() {
 		return id;
 	}
@@ -68,12 +60,12 @@ public class Stock implements Serializable {
 		this.id = id;
 	}
 
-	public String getStockId() {
-		return stockId;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setStockId(String stockId) {
-		this.stockId = stockId;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public void setQuoteList(List<Quote> quoteList) {
@@ -98,7 +90,7 @@ public class Stock implements Serializable {
 
 	@Override
 	public String toString() {
-		return "StockModel [id=" + id + ", stockName=" + stockId + "]";
+		return "StockModel [id=" + id + ", stockName=" + description + "]";
 	}
 
 }
