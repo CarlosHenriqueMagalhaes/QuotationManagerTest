@@ -146,15 +146,30 @@ public class QuotationController {
 	 * @return multiple quotes created
 	 */
 	@PostMapping("/insertAll")
-	public ResponseEntity<?> insertMoreQuotations(@RequestBody StockDTO actionDTO) throws ExceptionCase {
+	public ResponseEntity<?> insertMoreQuotations(@RequestBody StockDTO stockDTO) throws ExceptionCase {
 		try {
-			Stock action = quoteService.insertMoreQuotation(actionDTO);
-			StockDTO dto = new StockDTO(action);
+			Stock stock = quoteService.insertMoreQuotation(stockDTO);
+			// seto todas as cotações existentes para essa ação na lista de cotações
+			stock.setQuoteList(quoteService.findByStockId(stock.getId()));
+			StockDTO dto = new StockDTO(stock);
 			return ResponseEntity.ok().body(dto);
 		} catch (ExceptionCase e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
+	}
 
+	/**
+	 * metodo para cadastrar todos os stocks conforme estão vindo do manager 8080
+	 * 
+	 * @return multiple quotes created
+	 */
+	@PostMapping("/insertAllStocks")
+	public ResponseEntity<?> insertAllStocks() throws ExceptionCase {
+		try {
+			return ResponseEntity.ok().body(quoteService.insertAllStocks());
+		} catch (ExceptionCase e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
 	}
 
 }

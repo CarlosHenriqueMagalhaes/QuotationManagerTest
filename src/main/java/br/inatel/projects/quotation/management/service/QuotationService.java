@@ -268,4 +268,27 @@ public class QuotationService {
 		return quotesDTO;
 	}
 
+	
+//	insere todos os stocks que estão disponiveis no 8080 incluindo os lixos
+	public List<StockDTO> insertAllStocks() {
+
+		// trago todas as ações do 8080
+		List<StockManagerDTO> stocksAtManager = stockAdapter.listAll();
+
+		List<StockDTO> stocks = new ArrayList<>();
+//		percorro a lista com todos os stocks que voltaram e para cada item da lista eu salvo
+//		o stock no meu banco de dados local
+		for (StockManagerDTO item : stocksAtManager) {
+			if (item != null) {
+				Stock newStock = new Stock();
+				newStock.setId(item.getId());
+				newStock.setDescription(item.getDescription());
+				newStock = save(newStock);
+				stocks.add(new StockDTO(newStock));
+			}
+		}
+
+		return stocks;
+	}
+
 }

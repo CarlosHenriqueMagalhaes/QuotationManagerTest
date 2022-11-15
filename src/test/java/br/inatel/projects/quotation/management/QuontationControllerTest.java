@@ -15,12 +15,6 @@
 //
 //import br.inatel.projects.quotation.management.form.StockForm;
 //
-///**
-// * Unit tests for the Controller class
-// * 
-// * @author francisco.carvalho
-// * @since 1.0
-// */
 //
 //@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //@ActiveProfiles("test")

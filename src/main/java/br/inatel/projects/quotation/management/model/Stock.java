@@ -33,7 +33,7 @@ public class Stock implements Serializable {
 
 	@JsonManagedReference
 	@OneToMany(mappedBy = "stock")
-	private List<Quote> quotes;
+	private List<Quote> quotes = new ArrayList<>();
 
 	public List<Quote> getQuotes() {
 		return quotes;
@@ -74,6 +74,7 @@ public class Stock implements Serializable {
 	}
 
 	public void setQuoteList(List<Quote> quoteList) {
+		this.quotes = quoteList;
 	}
 
 	@Override
