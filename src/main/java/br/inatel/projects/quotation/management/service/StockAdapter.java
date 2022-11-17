@@ -26,7 +26,7 @@ public class StockAdapter {
 	@Value("${server.host}")
 	private String host;
 
-	@Value("${server.port}")
+	@Value("${quotation.port}")
 	private String port;
 
 	@Cacheable(value = "stocksAtManagerList")
@@ -34,7 +34,7 @@ public class StockAdapter {
 
 		List<StockManagerDTO> stocksAtManager = new ArrayList<>();
 
-		Flux<StockManagerDTO> flux = WebClient.create(URL_MANAGER).get().uri("/stock").retrieve()
+		Flux<StockManagerDTO> flux = WebClient.builder().baseUrl("http://" + URL_MANAGER).build().get().uri("/stock").retrieve()
 				.bodyToFlux(StockManagerDTO.class);
 
 		flux.subscribe(f -> stocksAtManager.add(f));
