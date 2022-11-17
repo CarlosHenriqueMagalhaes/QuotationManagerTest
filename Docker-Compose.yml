@@ -11,40 +11,34 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=bootdb
     networks:
-      - qm-network
+      - inatel
 
- stock-manager:
+ stockmanager:
     image: adautomendes/stock-manager
-    container_name: stock-manager
+    container_name: stockmanager
     ports:
       - 8080:8080
-    environment:
-      - SERVER_HOST=stock-manager
-      - SERVER_PORT=8080
-      - MYSQL_HOST=mysql
-      - MYSQL_PORT=3306
-      - SPRING_PROFILES_ACTIVE=prod
     depends_on:
       - mysql
     networks:
-      - app-network
+      - inatel
 
  quotationmanagement:
-    image: quotation-manegement
-    container_name: quotation-manegement
+    image: quotation-management
+    container_name: quotation-management
     ports:
       - 8081:8081
     environment:
       - MYSQL_CONTAINER=mysql
       - STOCK_MANAGER_CONTAINER=stockmanager
-      - QUOTATION_MANAGER_CONTAINER=quotation-manegement
+      - QUOTATION_MANAGER_CONTAINER=quotation-management
       - SPRING_PROFILES_ACTIVE=prod
     networks:
-      - qm-network
+      - inatel
     depends_on:
       - stockmanager
       - mysql
 
 networks:     
-  qm-network:
+  inatel:
     driver: bridge        
