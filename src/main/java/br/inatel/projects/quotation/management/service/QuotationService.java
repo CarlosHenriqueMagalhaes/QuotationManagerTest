@@ -1,5 +1,11 @@
 package br.inatel.projects.quotation.management.service;
 
+/**
+ * Service class, where the methods to be called in the Controller class are located
+ * @author carlos.magalhaes
+ * @since 11/10/2022
+ */
+
 import java.util.ArrayList;
 
 /**
@@ -52,7 +58,7 @@ public class QuotationService {
 	 * 
 	 * @return list of quotes in format DTO -- ok
 	 */
-
+	// Método que lista todas as cotações (quotes)
 	@Cacheable(value = "stocksList")
 	public List<Quote> listAllQuotes() {
 		return quoteRepository.findAll();
@@ -63,7 +69,7 @@ public class QuotationService {
 	 * 
 	 * @return stock list -- ok
 	 */
-
+	// lista todos os stocks (ações cadastradas) com suas devidas cotações
 	@Cacheable(value = "stocksList")
 	public List<Stock> listAllStock() {
 		List<Stock> stocks = stockRepository.findAll();
@@ -72,26 +78,26 @@ public class QuotationService {
 	}
 
 	/**
-	 * method that fetches a stockId by id
-	 * 
-	 * @return stockId
-	 */
-
-	@Cacheable(value = "stocksList")
-	public Optional<Stock> findByIdStock(String id) {
-		return stockRepository.findById(id);
-	}
-
-	/**
 	 * 
 	 * method that fetches a stock by id
 	 * 
 	 * @return stockId
 	 */
-
+	// Mostra a cotação e o stock (ação) dessa cotação pelo id da cotação
 	@Cacheable(value = "stocksList")
 	public Optional<Quote> findById(String id) {
 		return quoteRepository.findById(id);
+	}
+
+	/**
+	 * method that fetches a stockId by id
+	 * 
+	 * @return stockId
+	 */
+	// Método que busca por id da cotação o stock que ele pertence
+	@Cacheable(value = "stocksList")
+	public Optional<Stock> findByIdStock(String id) {
+		return stockRepository.findById(id);
 	}
 
 	/**
@@ -100,7 +106,8 @@ public class QuotationService {
 	 * 
 	 * @return a quote list -- ok
 	 */
-
+	// método que busca stock (ações) e sua lista de quotes (cotações) pelo nome da
+	// ação (exemplo petr4)
 	@Cacheable(value = "stocksList")
 	public List<Quote> findByStockId(String idStock) {
 		return quoteRepository.findByStockId(idStock);
@@ -112,7 +119,7 @@ public class QuotationService {
 	 * @return quote created
 	 * @throws ExceptionCase BadRequest -- ok
 	 */
-
+	// salva uma cotação (quote) na ação (stock) selecionada
 	@CacheEvict(value = "stocksList", allEntries = true)
 	public Quote insertQuotation(QuoteDTO quoteDTO) throws ExceptionCase {
 
@@ -141,7 +148,8 @@ public class QuotationService {
 	 * @return error or success message - ok
 	 * @throws ExceptionCase BadRequest -- ok
 	 */
-
+	// Método que deleta uma cotação (quote) de um stock através do id da cotação a
+	// ser deletada
 	@CacheEvict(value = "stocksList", allEntries = true)
 	public String deleteQuotation(String quoteId) {
 
@@ -162,7 +170,7 @@ public class QuotationService {
 	 * @return QuoteDTO changed quote - ok
 	 * @throws ExceptionCase BadRequest -- ok
 	 */
-
+	// Método que altera uma cotação para uma nova
 	@CacheEvict(value = "stocksList", allEntries = true)
 	public Quote updateQuotation(QuoteDTO quoteDTO, String quoteId) throws ExceptionCase {
 
@@ -199,6 +207,7 @@ public class QuotationService {
 	 * @return quotes created
 	 * @throws ExceptionCase BadRequest -- ok
 	 */
+	// Método que salva várias cotações em um determinado stock
 	@CacheEvict(value = "stocksList", allEntries = true)
 	public Stock insertMoreQuotation(StockDTO stockDTO) {
 
@@ -268,16 +277,20 @@ public class QuotationService {
 		return quotesDTO;
 	}
 
-	
-//	insere todos os stocks que estão disponiveis no 8080 incluindo os lixos
+	/**
+	 * method to register all stocks as they are coming from the manager 8080
+	 * 
+	 * @return multiple quotes created
+	 */
+	// insere todos os stocks que estão disponiveis no 8080 incluindo os lixos
 	public List<StockDTO> insertAllStocks() {
 
 		// trago todas as ações do 8080
 		List<StockManagerDTO> stocksAtManager = stockAdapter.listAll();
 
 		List<StockDTO> stocks = new ArrayList<>();
-//		percorro a lista com todos os stocks que voltaram e para cada item da lista eu salvo
-//		o stock no meu banco de dados local
+		// percorro a lista com todos os stocks que voltaram e para cada item da lista
+		// eu salvo o stock no meu banco de dados local
 		for (StockManagerDTO item : stocksAtManager) {
 			if (item != null) {
 				Stock newStock = new Stock();

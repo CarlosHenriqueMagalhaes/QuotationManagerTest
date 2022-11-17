@@ -46,6 +46,7 @@ public class QuotationController {
 	 * @return quote list DTO -- ok
 	 */
 
+	// lista todas as cotações
 	@GetMapping
 	public ResponseEntity<?> listQuotes() {
 		List<Quote> quotes = quoteService.listAllQuotes();
@@ -57,6 +58,8 @@ public class QuotationController {
 	 * 
 	 * @return all stock lists
 	 */
+
+	// lista todas os stocks (ações cadastradas) com suas devidas cotações
 	@GetMapping("/all/stocks")
 	public ResponseEntity<?> listAllStock() {
 		List<Stock> stocklist = quoteService.listAllStock();
@@ -68,21 +71,21 @@ public class QuotationController {
 	 * 
 	 * @return a quote per id - ok
 	 */
+
+	// Mostra a cotação e o stock (ação) dessa cotação pelo id da cotação
 	@GetMapping("/{idQuote}")
 	public ResponseEntity<?> findById(@PathVariable String idQuote) {
 		return ResponseEntity.ok().body(quoteService.findById(idQuote).map(QuoteDTO::new));
 	}
-
-//	@GetMapping("/action/{stockId}")
-//	public ResponseEntity<?> findByStockId(@PathVariable String stockId) {
-//		return ResponseEntity.ok().body(quoteService.findByStockId(stockId).stream().map(QuoteDTO::new));
-//	}
 
 	/**
 	 * method that mapping
 	 * 
 	 * @return stock list -- ok
 	 */
+
+	// Lista o Stock (ação) desejada e suas cotações através do stock (exemplo
+	// petr4)
 	@GetMapping("/stock/{idStock}")
 	public ResponseEntity<?> findQuoteByStock(@PathVariable String idStock) {
 		List<Quote> quotes = quoteService.findByStockId(idStock);
@@ -100,6 +103,8 @@ public class QuotationController {
 	 * 
 	 * @return quote created
 	 */
+
+	// Método que salva uma nova cotação no stock desejado
 	@PostMapping("/insert")
 	public ResponseEntity<?> insertQuotation(@RequestBody QuoteDTO quoteDTO) throws ExceptionCase {
 		try {
@@ -118,6 +123,9 @@ public class QuotationController {
 	 * @param quoteId
 	 * @return error or success message - ok
 	 */
+
+	// Método que deleta uma cotação (quote) de um stock através do id da cotação a
+	// ser deletada
 	@DeleteMapping("/delete/{quoteId}")
 	public ResponseEntity<?> deleteQuotation(@PathVariable String quoteId) {
 		return ResponseEntity.ok().body(quoteService.deleteQuotation(quoteId));
@@ -129,6 +137,7 @@ public class QuotationController {
 	 * @params QuoteDTO quoteDTO, String quoteId
 	 * @return QuoteDTO changed quote - ok
 	 */
+	// Método que altera uma cotação para uma nova
 	@PutMapping("/update/{quoteId}")
 	public ResponseEntity<?> updateQuotation(@RequestBody QuoteDTO quoteDTO, @PathVariable String quoteId) {
 		try {
@@ -145,6 +154,7 @@ public class QuotationController {
 	 * 
 	 * @return multiple quotes created
 	 */
+	// Método que salva várias cotações em um determinado stock
 	@PostMapping("/insertAll")
 	public ResponseEntity<?> insertMoreQuotations(@RequestBody StockDTO stockDTO) throws ExceptionCase {
 		try {
@@ -159,10 +169,11 @@ public class QuotationController {
 	}
 
 	/**
-	 * metodo para cadastrar todos os stocks conforme estão vindo do manager 8080
+	 * method to register all stocks as they are coming from the manager 8080
 	 * 
 	 * @return multiple quotes created
 	 */
+	// metodo para cadastrar todos os stocks conforme estão vindo do manager 8080
 	@PostMapping("/insertAllStocks")
 	public ResponseEntity<?> insertAllStocks() throws ExceptionCase {
 		try {

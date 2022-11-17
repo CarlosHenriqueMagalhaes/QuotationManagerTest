@@ -1,5 +1,11 @@
 package br.inatel.projects.quotation.management.configuration;
 
+/**
+ * Configuration Swagger class 
+ * @author carlos.magalhaes
+ * @since 11/10/2022
+ */
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,7 +19,7 @@ public class SwaggerConfig {
 
 	@Bean
 	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2);    
+		return new Docket(DocumentationType.SWAGGER_2);
 	}
 
 }
